@@ -14,6 +14,13 @@ Greetings! Welcome back. I'm still not exactly sure how I'm going to format this
 
 ## Day 13: IPtables Installation And Configuration
 
+The goal is to install iptables on each application server, block port 3001 for everyone except the LBR host (I'm assuming this is the load balancer), and make it persistent.
+
+Okay first, let me install iptables. I'll use `sudo dnf whatprovides iptables` and install the package. That revealed a package called iptables-nft. I installed it on all 3 servers. Now, lets see how to list the current table rules and how to create a rule specifically for the load balancer server. The Unix & Linux website says use `iptables -L -v` to see the current rules. They're empty. I'm going to grab the IP address of the LB server and try to make deny rule for all traffic besides the LB. How I'm thinking about this is since the policy is Accept, there's an implicit allow at the end of these iptables. So all traffic should be allowed. I know with Cisco firewalls, once you match a rule, you won't be able to hit any rules below that. So if I deny traffic for everything except the LB on port 3001, if anybody tries to reach port 3001, they'll be blocked and will not move onto the implicit allow rule at the bottom of the iptable. So even if all the traffic is being allowed, it will still be dropped for this port. Just my rationale. 
+
+(we'll come back to this one)
+
+iptables-apply(8), iptables-save(8)
 
 
 ## Day 12: Linux Network Services
