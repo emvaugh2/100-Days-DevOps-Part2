@@ -18,9 +18,19 @@ The goal is to install iptables on each application server, block port 3001 for 
 
 Okay first, let me install iptables. I'll use `sudo dnf whatprovides iptables` and install the package. That revealed a package called iptables-nft. I installed it on all 3 servers. Now, lets see how to list the current table rules and how to create a rule specifically for the load balancer server. The Unix & Linux website says use `iptables -L -v` to see the current rules. They're empty. I'm going to grab the IP address of the LB server and try to make deny rule for all traffic besides the LB. How I'm thinking about this is since the policy is Accept, there's an implicit allow at the end of these iptables. So all traffic should be allowed. I know with Cisco firewalls, once you match a rule, you won't be able to hit any rules below that. So if I deny traffic for everything except the LB on port 3001, if anybody tries to reach port 3001, they'll be blocked and will not move onto the implicit allow rule at the bottom of the iptable. So even if all the traffic is being allowed, it will still be dropped for this port. Just my rationale. 
 
-(we'll come back to this one)
+UPDATE:
 
-iptables-apply(8), iptables-save(8)
+Alright after thinking this through with AI, I decided to create an allow rule for the Load Balancer and a deny rule for everybody else on port 3001. I made a rules for both TCP and UDP so that's 4 rules in total. 
+
+Now, this lab was a bit of a nightmare because the iptables commands weren't very clear. I also wasn't sure if the LBR host meant load balancer. Lastly, I had to run these commands on all 3 application servers and do verifications on non-LB servers and the LB server to make sure the rules work. Here's how I went about it.
+
+I had to install both `iptables` and `iptables-services`. Then, we `enabled --now` the iptables service to make sure that it starts now and persists across reboots. Then, we had to place the rules in a speciic spot above the reject rule at the end of the INPUT chain (for inbound or ingress traffic where the LB would be coming from). I never made an iptable rule before (I've only worked with `firewall-cmd` before) so the format was something like: `sudo iptables -I INPUT 5 -p tcp -s 10.X.X.X --dport 3001 -j ACCEPT`. So nothing crazy but a few things: I didn't see any great examples in the man pages so I didn't know how to create this rule and I'm also used to making rules in the Cisco FMC or ADSM instead of doing it from scratch in the CLI. So this is a bit new to me doing this on the command line. It all makes sense though. The -I flag is which chain and where on the chain to put the rule. -p is for protocol so choose TCP or UDP generally speaking. -s is the source IP. --dport is the destination port the source IP is trying to get to. -j flag is for allow or deny (or return). Now, why the letter j? I have no cluse. 
+
+So, I made those 4 rules and then verified they were in the iptables using `sudo iptables -L INPUT -n --line-numbers`. Now, to save this was even more weird. I had to use the command `sudo sh -c 'iptables-save > /etc/sysconfig/iptables'` which, I don't even know what sh -c does. I got this straight from AI. You can grep on that file to see the changes you made. To do a quick verification check for persistence without a reboot, you can just restart the iptables service `sudo systemctl restart iptables`. Then check to see if the rules are still there. 
+
+Now, I had to do a netcat test `nc -zv <server> 3001` from the non-allowed server and the LB server. I got a timeout for the non-allowed server and a connection from the LB server. I got the LB server's IP by pinging it froma different server. I had to repeat all of this on the other 2 servers. I also used a `telnet <server> 3001` test where I got a connection or no connection at all. Once everything was verified, I got a successful message for the lab. 
+
+SHEESH. Learned a lot. Humbling considering my background. 
 
 
 ## Day 12: Linux Network Services
