@@ -28,7 +28,7 @@ Before changing ownership, I made sure the NGINX user existed on my machine usin
 
 Sure enough there was a typo. It's been a long work day and I didn't realize I left the last apostrophe off of the ssl_certificate_key line. I found this by myself so AI didn't solve this for me. 
 
-Once I fixed that, I restarted NGINX and it worked. I did a `curl -Ik https://stapp02` test which gave me a HTTP 200 response (I think that's the proper response). Then I did another curl test to the localhost to see my Welcome! output. I then received a green success check for the lab. 
+Once I fixed that, I restarted NGINX and it worked. I did a `curl -Ik https://stapp02` test which gave me a HTTP 200 response (I think that's the proper response). Then I did another curl test to the localhost to see my Welcome! output. I actually did ask AI to generate the new index.html file because while I have written some HTML in the past, I don't know how to do it anymore now. So I copied and pasted that. I then received a green success check for the lab. 
 
 A few takeaways, Copilot on Bing is not great. Google AI is better for a conversation. 
 
