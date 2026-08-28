@@ -10,7 +10,18 @@ Greetings! Welcome back. I'm still not exactly sure how I'm going to format this
 ## Day 17: Install and Configure PostgreSQL
 ## Day 16: Install and Configure Nginx as an LBR
 ## Day 15: Setup SSL for Nginx
+
+I actually have no clue how to do this so I will be using Google and AI. I haven't configured many servers outside of Cisco and Solarwinds products. 
+
 ## Day 14: Linux Process Troubleshooting
+
+The issue is the Apache service is malfunctioning on one of the application servers. We also want Apache to run on port 8082 on all services. I'm going to do a `systemctl status httpd.service` to investigate. On stapp01, it's saying httpd.service failed to start because it couldn't bind to the socket 0.0.0.0:8082. Using `ss -tunlpe`, I see that the sendmail.service is already on that port so I'm going to shut down that service and restart Apache. I also enabled Apache and did a curl on the localhost:8082 and received output. Looks like it's working so far. On to stapp02.
+
+On stapp02, I went through the same troubleshooting process. Apache was already listening on socket *:8082 which I believe is for both IPv4 and IPv6. I did a `sudo systemctl status httpd.service` and the service was working properly. I just enabled it just for persistence. I also received the same output with the curl test. Lets move to stapp03.
+
+It was the same exact situation on stapp03 as it was on stapp02 so I followed the same process. After that was completed, I made sure I did a few more curl tests just to make sure routing was in place. On stapp02, I did `curl http://stapp02:8082` and to stapp01. I received the expected output. Then, I logged back into stapp01 and did curl tests to stapp02 and stapp03 and received the proper output. 
+
+Finally, I had KodeKloud check my work and received a green check for success! Pretty simple. I've done a lot of this work while studying for the RHCSA so this adds up. 
 
 ## Day 13: IPtables Installation And Configuration
 
