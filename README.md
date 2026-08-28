@@ -9,9 +9,28 @@ Greetings! Welcome back. I'm still not exactly sure how I'm going to format this
 ## Day 18: Install and Configure DB Server
 ## Day 17: Install and Configure PostgreSQL
 ## Day 16: Install and Configure Nginx as an LBR
+
+
+
 ## Day 15: Setup SSL for Nginx
 
 I actually have no clue how to do this so I will be using Google and AI. I haven't configured many servers outside of Cisco and Solarwinds products. 
+
+So we need to install NGINX on App Server 2, move the self-signed SSL certificate to "some appropriate location and deploy the same in NGINX" (whatever that means). Then create an index.html file to display `Welcome!` under the NGINX root. Lastly, do a curl test to the stapp02. I used `sudo systemctl status nginx` to see if it started and was enabled. So far so good. 
+
+So the SSL certificate is located in the `/tmp/` directory. I'm going to google where this needs to go in the NGINX configurations. I found a website called cert-depot.com which outlines this process. So first, I need to make the directory (and parent directories) for `/etc/nginx/ssl`. I need to move the certificate and key under the ssl directory. Then change the permissions on the key. Lastly, I need to make the root user the owner of the files. 
+
+First, I'll install and enable --now NGINX. 
+
+(Troubleshooting. I ran into an issue with NGINX failing to start. I couldn't find out what the issue was by reading the logs in the systemctl status output. Once I put that information in Google, it gave me a bunch of solutions and told me to check line 58 in the file. I went to line 58 and realized I had an indentation error which isn't truly accurate. I just forgot to comment out the "If this is a TLS enabled server," part which should not have been readable by the file. Once I tried to restart NGINX again, I got a different error code. Now it's saying it cant load the certificate key. I'm assuming this is an ownership issue. I googled it and that looks like the issue. I would assume nginx needs ownership over the key. 
+
+Before changing ownership, I made sure the NGINX user existed on my machine using `cat /etc/passwd | grep nginx` and saw the nginx owner. I used `sudo chown nginx:nginx /etc/nginx/ssl/nautilus.key` to change the ownership. That didn't fix the issue. I did `sudo nginx -t` to test and it's saying this file doesn't exist. Maybe it's a typo somewhere. 
+
+Sure enough there was a typo. It's been a long work day and I didn't realize I left the last apostrophe off of the ssl_certificate_key line. I found this by myself so AI didn't solve this for me. 
+
+Once I fixed that, I restarted NGINX and it worked. I did a `curl -Ik https://stapp02` test which gave me a HTTP 200 response (I think that's the proper response). Then I did another curl test to the localhost to see my Welcome! output. I then received a green success check for the lab. 
+
+A few takeaways, Copilot on Bing is not great. Google AI is better for a conversation. 
 
 ## Day 14: Linux Process Troubleshooting
 
