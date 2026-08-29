@@ -10,6 +10,13 @@ Greetings! Welcome back. I'm still not exactly sure how I'm going to format this
 ## Day 17: Install and Configure PostgreSQL
 ## Day 16: Install and Configure Nginx as an LBR
 
+Okay so while I know my way around a load balancer (LB or LBR) pretty okay, I've never configured NGINX as an LB so I'll google this as well. So, here are the tasks: configure the LBR server with NGINX, use HTTP as the LB protocol and all App Servers should be utilized, keep the Apache port that's being used on the app servers the same and make sure the Apache service is running, and lastly, do a curl test on the LBR server on port 80 to verify configuration. 
+
+Lets go and install NGINX on the LBR using `sudo dnf install -y nginx` and get it running using `sudo systemctl enable --now nginx`. It was already installed but the service was stopped. I went and got it started. Now, lets get the HTTP context configured. I'm not used to this so I'll look around first and see if I can get it figured out myself. The lab says the configurations are located in the nginx.conf file. Not surprised. Nothing jumps out at me right now besides the server_name but I would assume this is the load balancer's name. Going to google it. None of these google searches were very clear but I did find an article on Medium that says I need to add the IP addresses to the server_name list. This may be incorrect. I found another website that says I need to configure an upstream block. Lets try that. I guess my thing is, I don't think we're on a domain. I did `hostnamectl` and I'm not seeing anything. A quick google search says use hostname -d or -f to see your domain and I don't see anything. So I'm going to leave server_name blank as it is and just put the upstream block information in the config file. I'll use ping to the get the IP addresses of the 3 App servers. 
+
+Once I got the IPs, I added them in the upstream backend block I created. You can force the backend nodes to listen on a specific port by specifying the socket (IP:port). Before I did that, I logged into all 3 servers and made sure Apache was running on them. They were all running on port 8084. I went back to the LBR server and restarted NGINX. Going to perform the curl test from another machine to see if everything works. I tried to log into the DB server since it's on the internal network. It didn't recognize the hostname. I stayed on the jump-host which is in the DMZ and did the test `curl http://stlb01:80` and received the usual output. I should've done a before and after now that I think about it. Going to submit my answers now. 
+
+I did not pass. Lets see what the issue was. I'll use AI next time. Taking a break. 
 
 
 ## Day 15: Setup SSL for Nginx
@@ -30,7 +37,7 @@ Sure enough there was a typo. It's been a long work day and I didn't realize I l
 
 Once I fixed that, I restarted NGINX and it worked. I did a `curl -Ik https://stapp02` test which gave me a HTTP 200 response (I think that's the proper response). Then I did another curl test to the localhost to see my Welcome! output. I actually did ask AI to generate the new index.html file because while I have written some HTML in the past, I don't know how to do it anymore now. So I copied and pasted that. I then received a green success check for the lab. 
 
-A few takeaways, Copilot on Bing is not great. Google AI is better for a conversation. 
+A few takeaways, Copilot on Bing is not great. Google AI is better for a conversation. Also, here's that website I found about the SSL certificate and key: https://cert-depot.com/guides/self-signed-cert-nginx
 
 ## Day 14: Linux Process Troubleshooting
 
