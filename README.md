@@ -8,6 +8,10 @@ Greetings! Welcome back. I'm still not exactly sure how I'm going to format this
 ## Day 19: Install and Configure Web Application
 ## Day 18: Install and Configure DB Server
 ## Day 17: Install and Configure PostgreSQL
+
+Going to get this started in one second. 
+
+
 ## Day 16: Install and Configure Nginx as an LBR
 
 Okay so while I know my way around a load balancer (LB or LBR) pretty okay, I've never configured NGINX as an LB so I'll google this as well. So, here are the tasks: configure the LBR server with NGINX, use HTTP as the LB protocol and all App Servers should be utilized, keep the Apache port that's being used on the app servers the same and make sure the Apache service is running, and lastly, do a curl test on the LBR server on port 80 to verify configuration. 
