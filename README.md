@@ -18,6 +18,15 @@ Once I got the IPs, I added them in the upstream backend block I created. You ca
 
 I did not pass. Lets see what the issue was. I'll use AI next time. Taking a break. 
 
+UPDATE:
+
+Okay so after asking AI what the issue was, apparently I didn't add the `proxy_pass http://backend;` part into my configuration. I had no clue this was required. The backend naming is arbitrary. This is whatever you name your upstream block. So I'm going to do everything I just did and see if I get a different result from my curl test. Apparently, we're supposed to get a `Welcome to NGINX!` greeting. Also, I have to use the `nginx -t` for configuration verifcation. This is an important lesson! Always try to at least imagine what the ideal outcome should look like. In some way, you should know what your end configuration should say and behave like. Part of being a good engineer. 
+
+The curl output should be `Welcome to xFusionCorp Industries!`. Also, before any work is done, the curl on port 80 to the load balancer failed. Connection refused. Okay, lets get this up and running. Also, the proxy_pass with the location part needs to be defined inside the server { } block. Alright I ran `sudo nginx -t` and the test was successful. 
+
+I ran the curl test from the jump-host and I received the Welcome output! Nice. Shout to Copilot. Learned a few new things here. Definitely worth the struggle. 
+
+
 
 ## Day 15: Setup SSL for Nginx
 
