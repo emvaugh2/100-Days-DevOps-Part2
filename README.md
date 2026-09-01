@@ -5,9 +5,29 @@ Greetings! Welcome back. I'm still not exactly sure how I'm going to format this
 
 
 ## Day 20: Configure Nginx + PHP-FPM Using Unix Sock
+
+
+
 ## Day 19: Install and Configure Web Application
+
+
+
 ## Day 18: Install and Configure DB Server
 
+This lab seems pretty similiar to the last lab we completed except instead of PostgreSQL, we're using Maria DB. The tasks are the same though beside maybe installing Maria DB on the database (DB) server. Lets get started. 
+
+I used `dnf whatprovides mariadb` to see what the package was called and then installed it using `sudo dnf install -y mariadb`. I did `cat /etc/passwd` to see if the mysql user was created which it was. I'm not very familiar with DBs so I checked to see if there was an associated service using `rpm -ql mariadb | grep service` and didn't see anything. I also didn't see anything using `sudo systemctl status mariadb` or mysql. After googling a Maria DB install guide, I see I needed to also download the `mariadb-server` package. Once that was completed, I started and enabled the service. 
+
+My goal is to get to the mysql prompt. To do that, it appears I need to secure my DB using `sudo mariadb-secure-installation`, following those steps, and then using `mariadb -u root -p` to log into the prompt. Once I went through both of these commands, I was still being denied entry into the DB. I rerant the secure installation command and gave myself a root password. I was able to log into the DB after that. 
+
+With that being said, I'm going ot use the same commands as I did with the lab because I've done a Maria DB set up before and it was a mix of the previous steps I just talked about and the steps in the last lab. See the PostgreSQL lab for the next steps. I'll just document if I run into another issue here. 
+
+The syntax for creating users was a tiny bit different. Instead of WITH PASSWORD, we have to use IDENTIFIED BY. Also, for Maria DB, I have to create the DB, grant my user permissions over it, and then refresh the privileges on the DB. The syntax is a little different. Here are the commands basically:
+- CREATE DATABASE kodekloud_db10;
+- GRANT ALL PRIVILEGES ON kodekloud_db10.* TO 'kodekloud_rin'@'localhost';
+- FLUSH PRIVILEGES;
+
+I still ran into another issue because of how I created my user. I needed to add the @'localhost" portion in my command. So this was basically a syntax issue between PostgreSQL and Maria DB. I used `SHOW DATABASES;` to verify my DB was created. I see it but I didn't check to see my privileges over it. I took a risk and submitted the lab and received a green check for it. All done!
 
 
 ## Day 17: Install and Configure PostgreSQL
