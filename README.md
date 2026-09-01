@@ -7,12 +7,22 @@ Greetings! Welcome back. I'm still not exactly sure how I'm going to format this
 ## Day 20: Configure Nginx + PHP-FPM Using Unix Sock
 ## Day 19: Install and Configure Web Application
 ## Day 18: Install and Configure DB Server
+
+
+
 ## Day 17: Install and Configure PostgreSQL
 
-Going to get this started in one second. 
+This task was pretty straightforward. We only had to do two things: create a user on the CentOS system and then create a database (DB) in PostgreSQL with that user having full permissions. 
 
+Now, I failed this task at first because I didn't use the command `GRANT ALL PRIVILEGES ON DATABASE your_database_name TO your_username;`. I'm not sure if this was exactly needed because when I used the `\l` command to see the created table, the ACCESS column was still blank. A google search said that the column would be blank if the OWNER has full access. The second thing I did to correct this lab was give my user a password in the database as well. I gave it the same password as I did in the CentOS shell. 
 
+So, with that being said, to create a user, use `sudo useradd kodekloud_aim` to create the user. You can then use `sudo passwd kodekloud_aim` to create a password for this user. Kode Kloud gave you the password they wanted you to pass to the user. You can verify that user account has been made using `grep kodekloud_aim /etc/passwd`. 
 
+Now, lets move to the database portion. When you install PostgreSQL, your system automatically creates a user named postgres so switch to that user on your system using `sudo -i -u postgres` and log into the PostgreSQL CLI using `psql`. 
+
+Use `CREATE DATABASE <db-name> OWNER kodekloud_aim` to create the database. Well, before that, create your user using `CREATE USER kodekloud_aim WITH PASSWORD '<insert_password>';`. Then you create your DB. Don't forget to grant this user all privileges with that previous command I listed. 
+
+Once I completed these tasks, I received a green check on my lab. This was really easy. Took a little bit of googling to see where I went wrong but I did this in about 15 minutes. 
 
 
 ## Day 16: Install and Configure Nginx as an LBR
