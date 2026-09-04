@@ -10,7 +10,7 @@ Greetings! Welcome back. I'm still not exactly sure how I'm going to format this
 
 ## Day 19: Install and Configure Web Application
 
-Stay tuned 
+Need a sec
 
 ## Day 18: Install and Configure DB Server
 
