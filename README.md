@@ -10,7 +10,23 @@ Greetings! Welcome back. I'm still not exactly sure how I'm going to format this
 
 ## Day 19: Install and Configure Web Application
 
-Need a sec
+The goal for this lab seems to prepare two servers in order to host two static websites. We need to install `httpd` on App Server 1. Apache needs to server on port 8085. Then, we need to set up two website backups with their own URL routes/paths (not sure what it's called) on localhost:8085. Lastly, verify using a curl test. 
+
+Honestly, I don't know much about Apache and webpages because I don't deal with it often but we'll use Google (I'll try to not use AI unless necessary) to figure out how to implement these webpages. Lets get started. 
+
+So we'll install `httpd` using sudo dnf install httpd -y. That's pretty straightforward. A quick Google search tells us we need to go to /etc/httpd/conf/httpd.conf file and change the Listen line to Listen 8085. I'll restart the service afterwards to make sure the changes take effect. I believe once you see the status of the service, it will tell you which ports the service is listening on. 
+
+Before I even went to App Server 1 (stapp01), I was told the website backups were on the jump host. So I used secure copy to do that. The command was `scp -r /home/thor/news tony@stapp01:/home/tony/`. I forgot the -r flag the first time because I didn't realize those were directories. 
+
+After following the above instructions, I checked the status of HTTPD and it definitely says it's listening on port 8085 so this is wonderful. Now, I'll Google how to get those webpage paths configured. 
+
+UPDATE: Google is not helpful so I'll use AI to help me figure out how to create different URL paths on the localhost for this. 
+
+Alright, the biggest thing here was create Virtual Host block with the file name `/etc/httpd/conf.d/multi-path.conf`. I still didn't fully understand everything in this file but I know what it's doing. It's pointing our curl test at the appropriate directories to get to the index.html file we want. Maybe I'll dissect this later but I don't plan on being a web server expert so I'm going to skip it for now. 
+
+Google refined this file a few times because we ran into a 404 Not Found error. We weren't really sure what the issue was but I pinpointed it. I asked Google did we still need to do the permissions and file ownership changes because I usually see that when I'm dealing with web servers. Plus all the other pages I searched for had these instructions on them. Once I asked Google that, I noticed the file path was /var/www/html/<insert_here> and my file paths were just /var/www/<insert_here>. So this showed that Apache didn't know where to find my files. Google said that was definitely the issue so I had to move my directories under the html directory using the `mv` command. Then, I gave the apache system user ownership over the /html/ directory. I also changed the permission to 755 on the news and cluster directories. Lastly, I restarted the Apache service and then my curl test worked. 
+
+Lab complete. 
 
 ## Day 18: Install and Configure DB Server
 
